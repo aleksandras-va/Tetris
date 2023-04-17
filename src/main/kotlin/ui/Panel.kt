@@ -7,8 +7,8 @@ import java.awt.Graphics
 import javax.swing.JPanel
 
 
-class Panel(private val playArea: Entity) : JPanel() {
-    var activePiece: Entity? = null
+class Panel(val playArea: Entity) : JPanel() {
+    var piece: Entity? = null
     var offset = Coordinates(0, 0)
 
     override fun paintComponent(g: Graphics) {
@@ -16,7 +16,7 @@ class Panel(private val playArea: Entity) : JPanel() {
 
         paintPlayArea(g, playArea)
 
-        activePiece?.let { paintPiece(g, it, offset) }
+        piece?.let { paintPiece(g, it, offset) }
 
         // Draw grid
         g.color = Color.LIGHT_GRAY
@@ -30,4 +30,5 @@ class Panel(private val playArea: Entity) : JPanel() {
         }
     }
 }
+
 

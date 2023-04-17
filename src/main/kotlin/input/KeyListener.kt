@@ -1,7 +1,6 @@
 package input
 
 import core.Game
-import ui.Panel
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 

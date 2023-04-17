@@ -5,7 +5,7 @@ enum class Shape {
 }
 
 class PieceFactory {
-    fun create(shape: Shape, color: Int): Entity {
+    private fun create(shape: Shape, color: Int): Entity {
         var bounds = Coordinates(3, 3)
 
         if (shape == Shape.I || shape == Shape.O) {
@@ -16,12 +16,12 @@ class PieceFactory {
 
         when (shape) {
             Shape.I -> createIPiece(piece, color)
-            Shape.O -> TODO()
-            Shape.J -> TODO()
-            Shape.L -> TODO()
-            Shape.S -> TODO()
+            Shape.O -> createOPiece(piece, color)
+            Shape.J -> createJPiece(piece, color)
+            Shape.L -> createLPiece(piece, color)
+            Shape.S -> createSPiece(piece, color)
             Shape.T -> createTPiece(piece, color)
-            Shape.Z -> TODO()
+            Shape.Z -> createZPiece(piece, color)
         }
 
         return piece
@@ -34,11 +34,49 @@ class PieceFactory {
         piece.set(2, 3, randomColor)
     }
 
+    private fun createOPiece(piece: Entity, randomColor: Int) {
+        piece.set(1, 1, randomColor)
+        piece.set(1, 2, randomColor)
+        piece.set(2, 1, randomColor)
+        piece.set(2, 2, randomColor)
+    }
+
+    private fun createJPiece(piece: Entity, randomColor: Int) {
+        piece.set(0, 1, randomColor)
+        piece.set(1, 1, randomColor)
+        piece.set(2, 0, randomColor)
+        piece.set(2, 1, randomColor)
+    }
+
+    private fun createLPiece(piece: Entity, randomColor: Int) {
+        piece.set(0, 1, randomColor)
+        piece.set(1, 1, randomColor)
+        piece.set(2, 1, randomColor)
+        piece.set(2, 2, randomColor)
+    }
+
+    private fun createSPiece(piece: Entity, randomColor: Int) {
+        piece.set(1, 1, randomColor)
+        piece.set(1, 2, randomColor)
+        piece.set(2, 0, randomColor)
+        piece.set(2, 1, randomColor)
+    }
+
     private fun createTPiece(piece: Entity, randomColor: Int) {
         piece.set(1, 0, randomColor)
         piece.set(1, 1, randomColor)
         piece.set(1, 2, randomColor)
         piece.set(2, 1, randomColor)
+    }
 
+    private fun createZPiece(piece: Entity, randomColor: Int) {
+        piece.set(1, 0, randomColor)
+        piece.set(1, 1, randomColor)
+        piece.set(2, 1, randomColor)
+        piece.set(2, 2, randomColor)
+    }
+
+    fun getRandomPiece(): Entity {
+        return create(Shape.values().random(), (1..5).random())
     }
 }

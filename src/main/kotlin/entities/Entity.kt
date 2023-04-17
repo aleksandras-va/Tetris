@@ -23,38 +23,5 @@ class Entity(val rows: Int, val columns: Int) {
     }
 }
 
-fun intersects(gameMap: Entity, piece: Entity, offsetRow: Int, offsetColumn: Int): Boolean {
-    for (r in 0 until piece.rows) {
-        for (c in 0 until piece.columns) {
-            val pieceColor = piece.get(r, c)
 
-            if (pieceColor == 0) {
-                continue
-            }
-
-            val mapColor = gameMap.get(r + offsetRow, c + offsetColumn)
-
-            if (mapColor != 0) {
-                return true
-            }
-
-        }
-    }
-
-    return false
-}
-
-fun applyPiece(gameMap: Entity, piece: Entity, offsetRow: Int, offsetColumn: Int) {
-    for (r in 0 until piece.rows) {
-        for (c in 0 until piece.columns) {
-            val pieceColor = piece.get(r, c)
-
-            if (pieceColor == 0) {
-                continue
-            }
-
-            gameMap.set(r + offsetRow, c + offsetColumn, pieceColor)
-        }
-    }
-}
 
