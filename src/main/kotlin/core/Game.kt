@@ -5,10 +5,45 @@ import entities.Entity
 import entities.PieceFactory
 import ui.Panel
 import utilities.handlePieceRotation
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent.VK_DOWN
+import javax.swing.Timer
+
+// TODO: spawn piece in middle
+// TODO: death
+// TODO: line detection
+// TODO: wall bounce
+// TODO: reset button
+// TODO: drop piece
 
 class Game(private val gamePanel: Panel) {
     fun start() {
         spawnPiece()
+
+        val timer = Timer(10) { event: ActionEvent -> onTimer() }
+
+        timer.start()
+    }
+
+    private val keysDown = BooleanArray(256)
+    private var framesUntilZero = 200
+
+    private fun onTimer() {
+
+
+        if (keysDown[VK_DOWN]) {
+            framesUntilZero -= 10;
+        }
+
+        if (--framesUntilZero > 0) {
+            return
+        }
+
+        framesUntilZero = 200
+
+
+
+        movePiece("down")
     }
 
     fun movePiece(direction: String) {
@@ -32,6 +67,7 @@ class Game(private val gamePanel: Panel) {
         gamePanel.offset = offset
         gamePanel.repaint()
     }
+
 
     fun rotatePiece() {
         gamePanel.piece = handlePieceRotation(gamePanel.piece!!)
@@ -81,6 +117,14 @@ class Game(private val gamePanel: Panel) {
         }
 
         return false
+    }
+
+    fun keyDown(keyCode: Int) {
+        keysDown[keyCode] = true;
+    }
+
+    fun keyUp(keyCode: Int) {
+        keysDown[keyCode] = false;
     }
 }
 
