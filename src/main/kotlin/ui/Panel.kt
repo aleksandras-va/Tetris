@@ -1,5 +1,6 @@
 package ui
 
+import core.IOnNotify
 import entities.Coordinates
 import entities.Entity
 import java.awt.Color
@@ -7,7 +8,7 @@ import java.awt.Graphics
 import javax.swing.JPanel
 
 
-class Panel(val playArea: Entity) : JPanel() {
+class Panel(val playArea: Entity) : JPanel(), IOnNotify {
     var piece: Entity? = null
     var offset = Coordinates(0, 0)
 
@@ -28,6 +29,14 @@ class Panel(val playArea: Entity) : JPanel() {
         for (y in 0..height step 32) {
             g.drawLine(0, y, width, y)
         }
+    }
+
+    override fun handleEvent(name: String) {
+        if (name != "repaint") {
+            return
+        }
+
+        repaint()
     }
 }
 

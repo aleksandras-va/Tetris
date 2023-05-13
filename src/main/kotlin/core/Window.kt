@@ -1,7 +1,7 @@
 package core
 
 import entities.Entity
-import input.KeyListener
+import input.KeyboardHandler
 import ui.Panel
 import javax.swing.JFrame
 
@@ -17,7 +17,7 @@ class Window : JFrame("Tetris") {
         gamePanel = Panel(Entity(20, 10))
         game = Game(gamePanel)
 
-        gamePanel.addKeyListener(KeyListener(game))
+        gamePanel.addKeyListener(KeyboardHandler(game))
         gamePanel.isFocusable = true
 
         contentPane.add(gamePanel)
