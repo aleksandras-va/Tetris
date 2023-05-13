@@ -5,13 +5,29 @@ import entities.Entity
 import entities.PieceFactory
 import ui.Panel
 import utilities.handlePieceRotation
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
+import javax.swing.Timer
 
-class Game(private val gamePanel: Panel) {
-    fun start() {
-        spawnPiece()
+class Game(private val gamePanel: Panel) : Observable(), IOnNotify {
+    private val keyPressRegister = BooleanArray(256)
+    private var tickCounter = 0
+
+
+    init {
+        register(gamePanel)
+        register(this)
     }
 
-    fun movePiece(direction: String) {
+    fun start() {
+        spawnPiece()
+
+        val timer = Timer(10) { _: ActionEvent -> onTimer() }
+
+        timer.start()
+    }
+
+    private fun movePiece(direction: String) {
         var offset = gamePanel.offset
 
         when (direction) {
@@ -30,10 +46,10 @@ class Game(private val gamePanel: Panel) {
         }
 
         gamePanel.offset = offset
-        gamePanel.repaint()
+        onNotify("repaint")
     }
 
-    fun rotatePiece() {
+    private fun rotatePiece() {
         gamePanel.piece = handlePieceRotation(gamePanel.piece!!)
 
         if (intersects(gamePanel.piece!!, gamePanel.offset)) {
@@ -81,6 +97,42 @@ class Game(private val gamePanel: Panel) {
         }
 
         return false
+    }
+
+    fun keyDown(keyCode: Int) {
+        keyPressRegister[keyCode] = true
+
+        when (keyCode) {
+            KeyEvent.VK_LEFT -> movePiece("left")
+            KeyEvent.VK_RIGHT -> movePiece("right")
+            KeyEvent.VK_UP -> rotatePiece()
+        }
+    }
+
+    fun keyUp(keyCode: Int) {
+        keyPressRegister[keyCode] = false
+    }
+
+    private fun onTimer() {
+        if (keyPressRegister[KeyEvent.VK_DOWN]) {
+            tickCounter += 100
+        } else {
+            tickCounter += 1
+        }
+
+        if (tickCounter <= 200) {
+            return
+        }
+
+        tickCounter = 0
+
+        onNotify("timerExpired")
+    }
+
+    override fun handleEvent(name: String) {
+        if (name == "timerExpired") {
+            movePiece("down")
+        }
     }
 }
 
