@@ -1,17 +1,17 @@
 package core
 
-interface IOnNotify {
-    fun handleEvent(name: String)
+interface INotifyObservers {
+    fun onNotification(name: String)
 }
 
 open class Observable {
-    private val observers = ArrayList<IOnNotify>()
+    private val observers = ArrayList<INotifyObservers>()
 
-    fun onNotify(eventName: String) {
-        observers.forEach { it.handleEvent(eventName) }
+    fun notify(eventName: String) {
+        observers.forEach { it.onNotification(eventName) }
     }
 
-    fun register(observer: IOnNotify) {
+    fun register(observer: INotifyObservers) {
         observers.add(observer)
     }
 }
