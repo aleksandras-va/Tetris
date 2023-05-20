@@ -1,6 +1,6 @@
 package ui
 
-import core.IOnNotify
+import core.INotifyObservers
 import entities.Coordinates
 import entities.Entity
 import java.awt.Color
@@ -8,7 +8,7 @@ import java.awt.Graphics
 import javax.swing.JPanel
 
 
-class Panel(val playArea: Entity) : JPanel(), IOnNotify {
+class Panel(val playArea: Entity) : JPanel(), INotifyObservers {
     var piece: Entity? = null
     var offset = Coordinates(0, 0)
 
@@ -31,7 +31,7 @@ class Panel(val playArea: Entity) : JPanel(), IOnNotify {
         }
     }
 
-    override fun handleEvent(name: String) {
+    override fun onNotification(name: String) {
         if (name != "repaint") {
             return
         }

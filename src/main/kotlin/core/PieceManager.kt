@@ -6,7 +6,7 @@ import entities.PieceFactory
 import ui.Panel
 import utilities.handlePieceRotation
 
-class PieceManager(private val gamePanel: Panel, private val observable: Observable) {
+class PieceManager(private val gamePanel: Panel, private val gameObserver: Observable) : INotifyObservers {
     fun movePiece(direction: String) {
         var offset = gamePanel.offset
 
@@ -18,10 +18,8 @@ class PieceManager(private val gamePanel: Panel, private val observable: Observa
         }
 
         if (intersects(gamePanel.piece!!, offset)) {
-            if (direction == "down") {
-                setPiece(gamePanel.piece!!)
-                spawnPiece()
-            }
+            if (direction == "down") setPiece(gamePanel.piece!!)
+
             return
         }
 
@@ -39,12 +37,10 @@ class PieceManager(private val gamePanel: Panel, private val observable: Observa
         gamePanel.repaint()
     }
 
-    fun spawnPiece() {
+    private fun spawnPiece() {
         gamePanel.piece = PieceFactory().getRandomPiece()
         gamePanel.offset = Coordinates(0, 0)
         gamePanel.repaint()
-
-        observable.onNotify("pong")
     }
 
     private fun intersects(piece: Entity, offset: Coordinates): Boolean {
@@ -75,5 +71,12 @@ class PieceManager(private val gamePanel: Panel, private val observable: Observa
                 gamePanel.playArea.set(row + gamePanel.offset.row, column + gamePanel.offset.column, pieceColor)
             }
         }
+
+        spawnPiece()
+        gameObserver.notify("pieceLanded")
+    }
+
+    override fun onNotification(name: String) {
+        if (name == "gameStarted") spawnPiece()
     }
 }

@@ -2,30 +2,28 @@ package core
 
 import ui.Panel
 import java.awt.event.KeyEvent
-import javax.swing.Timer
 
-class Game(gamePanel: Panel) : Observable(), IOnNotify {
+class Game(gamePanel: Panel) : Observable(), INotifyObservers {
     private val pieceManager = PieceManager(gamePanel, this)
-    private val keyPressRegister = BooleanArray(256)
-    private var tickCounter = 0
+    
+    private val gameTimer = GameTimer {
+        notify("timerExpired")
+    }
 
     init {
         register(gamePanel)
         register(this)
+        register(pieceManager)
+
     }
 
     fun start() {
-        pieceManager.spawnPiece()
-
-        val timer = Timer(10) { onTimer() }
-
-        timer.start()
-
-        onNotify("gameStarted")
+        gameTimer.start()
+        notify("gameStarted")
     }
 
     fun keyDown(keyCode: Int) {
-        keyPressRegister[keyCode] = true
+        gameTimer.keyPressRegister[keyCode] = true
 
         when (keyCode) {
             KeyEvent.VK_LEFT -> pieceManager.movePiece("left")
@@ -35,31 +33,18 @@ class Game(gamePanel: Panel) : Observable(), IOnNotify {
     }
 
     fun keyUp(keyCode: Int) {
-        keyPressRegister[keyCode] = false
+        gameTimer.keyPressRegister[keyCode] = false
     }
 
-    private fun onTimer() {
-        if (keyPressRegister[KeyEvent.VK_DOWN]) {
-            tickCounter += 100
-        } else {
-            tickCounter += 1
-        }
 
-        if (tickCounter <= 200) {
-            return
-        }
-
-        tickCounter = 0
-
-        onNotify("timerExpired")
-    }
-
-    override fun handleEvent(name: String) {
+    override fun onNotification(name: String) {
         if (name == "timerExpired") {
             pieceManager.movePiece("down")
         }
 
-        if (name == "Ping") println("Pong")
+        if (name == "pieceLanded") {
+            println("--- Piece Landed ---")
+        }
     }
 }
 
